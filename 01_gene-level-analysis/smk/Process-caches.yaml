@@ -1,0 +1,10 @@
+study:
+    Sanson
+
+datasets:
+    CRISPRn-A375:
+    CRISPRi-A375:
+
+methods:
+    HitSelect:
+    ScreenBEAM:
