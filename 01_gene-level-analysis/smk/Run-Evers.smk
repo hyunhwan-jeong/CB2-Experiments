@@ -20,7 +20,7 @@ rule run_methods:
     output:
         "results/Evers/{dataset}/FDR/{method}.csv"
     params:
-        exec = "wrapper/run_{method}.R"
+        exec = "../wrapper/run_{method}.R"
     benchmark:
         "benchmarks_runtime/Evers/{dataset}_{method}.txt"
     shell:

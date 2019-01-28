@@ -1,17 +1,17 @@
-outputs = expand("results/{study}/{dataset}/AUC/{method}.csv", study = config['study'], dataset=config['datasets'], method = config['methods'])
-print(outputs)
+methods = ["HitSelect", "PinAPL-Py"]
+datasets = ["CRISPRn-RT112", "CRISPRi-RT112", "CRISPRn-UMUC3"]
 
 rule all:
     input:
-        outputs
+        expand("results/Evers/{dataset}/AUC/{method}.csv", dataset=datasets, method = methods)
 
 
 
 rule convert_external:
     input:
-        "results_from_gui/{study}/{dataset}/{method}.csv"
+        "results_from_gui/{dataset}/{method}.csv"
     output:
-        "results/{study}/{dataset}/FDR/{method}.csv"
+        "results/Evers/{dataset}/FDR/{method}.csv"
     params:
         method = "{method}"
     shell:
@@ -20,12 +20,10 @@ rule convert_external:
 
 rule generate_auc_output:
     input:
-        "results/{study}/{dataset}/FDR/{method}.csv"
+        "results/Evers/{dataset}/FDR/{method}.csv"
     output:
-        "results/{study}/{dataset}/AUC/{method}.csv"
-    params:
-        study = "{study}"
+        "results/Evers/{dataset}/AUC/{method}.csv"
     shell:
-        "./scripts/generate_auc_output.R -e data/{params.study}/essential-genes.txt -n data/{params.study}/non-essential-genes.txt -o {output} {input}"
+        "./scripts/generate_auc_output.R -e data/Evers/essential-genes.txt -n data/Evers/non-essential-genes.txt -o {output} {input}"
 
-  
+   
