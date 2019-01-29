@@ -87,15 +87,17 @@ generate_heatmap_legend_no_essential <- function() {
 prof.level <- "gene"
 order.methods <- c("CB2", "ScreenBEAM", "PBNPA", "sgRSEA", "HitSelect", "MAGeCK", "RIGER", "RSA", "PinAPL-Py")
 all_df$fdr[is.na(all_df$fdr)] <- 1
+all_df <- all_df %>% select(-stat)
 heatmap <- list()
 (col.pal <- RColorBrewer::brewer.pal(9, "Reds"))
 col.pal[1] <- "#FFFFFF"
 for (dset in unique(all_df$dataset)) {
+  print(dset)
   ess <- all_df %>% filter(dataset == dset) %>% select(gene, essential) %>% distinct()
   x <-
     all_df %>% filter(dataset == dset) %>% select(-dataset, -essential) %>% spread(method, fdr) %>%
     remove_rownames()
-  
+
   x[x < 1e-8] <- 1e-8
   x[,-1] <- floor(-log10(x[,-1]))
   x <- x[order(-rowSums(x[,-1])),]

@@ -7,7 +7,7 @@ library(here)
 source(here("utils", "parse_args.R"))
 df_count <- as.data.frame(df_count)
 
-
+multiplier <- 100
 eval(parse(text=params))
 
 library(tidyverse)
@@ -20,7 +20,7 @@ if(length(ctl)==1) {
 dat <- df_count %>% select(sgRNA = sgRNA, gene =gene, everything()) %>% as.data.frame %>% 
     UQnormalize(trt=trt, ctrl=ctl, print=T)
 
-ret_sgRSEA <- sgRSEA(dat, r.seed = 123)$gene.neg %>% as.data.frame
+ret_sgRSEA <- sgRSEA(dat, r.seed = 123, multiplier = multiplier)$gene.neg %>% as.data.frame
 
 print(ret_sgRSEA %>% head)
 

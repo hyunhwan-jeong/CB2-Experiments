@@ -1,0 +1,48 @@
+---
+title: "Quantification methods benchmarking"
+output:
+  pdf_document: default
+  html_notebook: default
+---
+
+## Source
+
+* [Hyun-Hwan Jeong's google drive, need to have the access permission](https://docs.google.com/spreadsheets/d/1LZhDcsd3VD205qc8BlCQ3KwaRthBl_GUu78JZV-eA0Y/edit#gid=1345122463)
+
+```{r, echo=F}
+library(tidyverse)
+library(ggsci)
+library(cowplot)
+```
+
+## Summary of data
+
+```{r, echo=F, warning=F}
+(df.summary <- read_delim("summary.tsv", "\t") %>% 
+   select(-library, -data_db_id) %>%
+   arrange(total))
+```
+
+# Mappability
+
+```{r}
+df_map <- read_delim("mappability.tsv", "\t") %>% arrange(desc(CC2)) %>%
+  mutate(data_plot_name = str_replace_all(data_plot_name, "_", "\n"))
+p <- df_map %>% 
+  gather(method, mappability, -data_plot_name) %>%
+  filter(data_plot_name != "Parnas_TNF_plasmid_LibAB") %>%
+  ggplot(aes(x=data_plot_name, y=mappability*100)) + 
+  xlim(head(df_map$data_plot_name,-1)) +
+  geom_line(aes(colour=method, group=method)) +
+  geom_point(aes(colour=method), size=2) +
+  #scale_colour_brewer(palette = "Set1") +
+  scale_color_npg() +
+ #theme(axis.text.x = element_text(angle=30, hjust=1)) + 
+  theme(legend.position = "bottom",
+        legend.justification="center") +
+  ylim(64,90) +
+  ylab("Mappablity (%)") + xlab("Dataset")
+#ggsave("fig5-mappability.tiff", p, width = 6, height = 4)
+save_plot("fig5-mappability.tiff", p, base_aspect_ratio = 2)
+p
+```

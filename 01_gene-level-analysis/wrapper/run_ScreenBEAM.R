@@ -16,6 +16,8 @@ burnin <- 5000
 nitt <- 150000
 
 eval(parse(text=params))
+
+
 ###NGS data
 r<-ScreenBEAM(
   input.file=tmp_input,

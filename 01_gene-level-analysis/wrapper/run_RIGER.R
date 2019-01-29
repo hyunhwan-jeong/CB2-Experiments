@@ -34,7 +34,11 @@ df_RIGER %>% group_by(GeneSymbol) %>% summarise(n = n()) %>% filter(n > 1) %>% u
 df_RIGER %>% filter(GeneSymbol %in% keeping_genes) %>%
   write_delim(TMP_INPUT, delim="\t")
 
-"java -jar {RIGER_PATH}/target/rigerj-{RIGER_VERSION}-assembly.jar -inputFile {TMP_INPUT} -outputFile {TMP_OUTPUT} -numRandomScoresPerGeneSetSize 100000" %>% glue %>% system
+if(is.null(params) == 0 ) {
+    params <- "-alpha 0.1"
+}
+
+"java -jar {RIGER_PATH}/target/rigerj-{RIGER_VERSION}-assembly.jar -inputFile {TMP_INPUT} -outputFile {TMP_OUTPUT} {params}" %>% glue %>% system
 
 read_delim(TMP_OUTPUT, delim="\t") %>%
   dplyr::rename(gene = "Gene Name") %>%
