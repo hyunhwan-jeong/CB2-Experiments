@@ -21,6 +21,7 @@ for(i in 1:length(ctl)) {
 sim.no <- 10
 
 eval(parse(text=params))
+print(sim.no)
 
 result <- PBNPA(datlist, sim.no = sim.no)$final.result
 print(result %>% head)
