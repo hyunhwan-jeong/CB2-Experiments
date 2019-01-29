@@ -10,7 +10,7 @@
 |---------------------------|------------------------------------------------------------------------------------------------------------------------------------|
 | `01_gene-level-analysis`  | Contains scripts and data used for "CB<sup>2</sup> is more sensitive in target gene identification than existing methods" section. |
 | `02_sgRNA-level-analysis` | Contains scripts and data used for "CB<sup>2</sup>" is more specific in target gene detection than existing methods" section.      |
-| `03_quantification`       | Contains scripts used for "CB <sup>2</sup> provides more accurate alignment without parameter tuning" section.                     |
+| `03_quantification`       | Contains scripts used for "CB<sup>2</sup> provides more accurate alignment without parameter tuning" section.                     |
 | `util`                    | A collection of utility scripts.                                                                                                   |
 
 ## Requirements
