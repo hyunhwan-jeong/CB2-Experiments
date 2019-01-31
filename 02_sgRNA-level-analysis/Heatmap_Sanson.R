@@ -92,5 +92,7 @@ plot_grid(
   CRISPRn %>% generate_figure(labels = c("A","B")),
   CRISPRi %>% generate_figure(labels = c("C","D")),
   nrow = 2,
-  labels = "AUTO") %>% save_plot("figures/heatmap_Sanson.png", ., base_width = 6, base_height = 8)
+  labels = "AUTO") 
 
+save_plot("figures/heatmap_Sanson.png", last_plot(), base_width = 6, base_height = 8)
+save_plot("figures/heatmap_Sanson.pdf", last_plot(), base_width = 6, base_height = 8)
