@@ -149,7 +149,12 @@ for(d in datasets) {
   }
 }
 
-legend_f1 <- plot_grid(get_legend(pt.f1[[1]] + theme(legend.position = "bottom", legend.title = element_blank())))
+legend_f1 <- plot_grid(
+  get_legend(pt.f1[[1]] +
+               theme(legend.position = "bottom", legend.title = element_blank()) +
+               guides(color=guide_legend(ncol=3))
+             )
+)
 
 top <- plot_grid(plotlist = pt.merged, nrow=3)
 bottom <- plot_grid(NULL, plot_grid(legend_heatmap), NULL, legend_f1, nrow=1, rel_widths = c(1,7,2,3))
