@@ -15,9 +15,9 @@ draw <- function(screen) {
                       select(method, gene, rank)) %>% bind_rows()
 
   df_rank %>% spread(method, rank) -> df_matrix
-  print(df_matrix)
   df_matrix %>% select(-gene) %>% cor(use="complete.obs") %>% pheatmap(display_numbers = T, silent=F, fontsize_number = 12) %>% .$gtable -> hm
-  
+  df_matrix %>% select(-gene) %>% cor(use="complete.obs") -> tmp
+  tmp[lower.tri(tmp)] %>% summary %>% print
   e <- scan("data/Evers/essential-genes.txt", what="character")
   
   df_rank %>% 
