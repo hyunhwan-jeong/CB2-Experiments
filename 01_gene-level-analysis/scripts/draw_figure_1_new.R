@@ -31,10 +31,10 @@ generate_heatmap_legend_no_essential_2 <- function() {
   test
 }
 
-files <- Sys.glob("results/Sanson/*/FDR/*")
+files <- Sys.glob("results/Evers/*/FDR/*")
 
-e <- scan("data/Sanson/essential-genes.txt", what ="character")
-n <- scan("data/Sanson/non-essential-genes.txt", what ="character")
+e <- scan("data/Evers/essential-genes.txt", what ="character")
+n <- scan("data/Evers/non-essential-genes.txt", what ="character")
 mk_df <- function(f) {
   read_csv(f) %>% 
     mutate(
@@ -46,7 +46,7 @@ mk_df <- function(f) {
 
 all_df <- lapply(files, mk_df) %>% bind_rows %>% filter(gene %in% c(e, n))
 
-datasets <- c("CRISPRn-A375", "CRISPRi-A375")
+datasets <- c("CRISPRn-RT112", "CRISPRn-UMUC3", "CRISPRi-RT112")
 
 pt.f1 <- list()
 ct <- c(0.1, 0.05, 0.01, 0.005, 0.001)
@@ -114,7 +114,7 @@ generate_heatmap_legend_no_essential <- function() {
 }
 
 prof.level <- "gene"
-order.methods <- c("CB2", "PBNPA", "sgRSEA", "HitSelect", "MAGeCK", "RIGER", "RSA", "ScreenBEAM", "CRISPhieRmix")
+order.methods <- c("CB2", "PBNPA", "sgRSEA", "HitSelect", "MAGeCK", "RIGER", "RSA", "ScreenBEAM", "PinAPL-Py", "CRISPhieRmix")
 all_df$fdr[is.na(all_df$fdr)] <- 1
 all_df <- all_df %>% select(-stat)
 heatmap <- list()
@@ -159,7 +159,7 @@ for (dset in unique(all_df$dataset)) {
       show_colnames = F,
       annotation_legend = F,
       annotation_col = tmp,
-      border_color = "black",
+      #border_color = "black",
       annotation_colors = list(
         "Essentiality" = c("Essential" = "#000000", "Non-essential" = "#bdbdbd")
       ),
@@ -189,12 +189,11 @@ legend_f1 <- plot_grid(
   )
 )
 
-top <- plot_grid(plotlist = pt.merged, nrow=2)
+top <- plot_grid(plotlist = pt.merged, nrow=3)
 bottom <- plot_grid(NULL, plot_grid(legend_heatmap), NULL, legend_f1, nrow=1, rel_widths = c(1,7,2,3))
 
 fig2 <- plot_grid(top,
                   bottom,
                   nrow = 2,
                   rel_heights = c(9,1))
-fig2
 #save_plot("figures/fig2.pdf", fig2, base_width = 14, base_height = 8)
