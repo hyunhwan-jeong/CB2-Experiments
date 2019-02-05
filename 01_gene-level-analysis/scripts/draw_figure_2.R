@@ -13,7 +13,7 @@ generate_heatmap_legend_no_essential_2 <- function() {
     stringsAsFactors = F
   )
   (col.pal <- RColorBrewer::brewer.pal(9, "OrRd"))
-  #col.pal[1] <- "#FFFFFF"
+  col.pal[1] <- "#FFFFFF"
   
   test <- ggplot(df, aes(x, y)) +
     geom_tile(aes(fill = FDR), colour = "grey50") +
@@ -44,7 +44,7 @@ mk_df <- function(f) {
     mutate(essential = gene %in% e)
 }
 
-all_df <- lapply(files, mk_df) %>% bind_rows %>% filter(gene %in% c(e, n))
+all_df <- lapply(files, mk_df) %>% bind_rows %>% filter(gene %in% c(e, n)) %>% filter(method != "CRISPhieRmix")
 
 datasets <- c("CRISPRn-A375", "CRISPRi-A375")
 
@@ -90,7 +90,7 @@ generate_heatmap_legend_no_essential <- function() {
     x = 1:5,
     y = 1:1,
     FDR = c("8", "6", "4", "2", "0"),
-    #FDR = sprintf("\u2265%d", seq(8,0)),
+    FDR = sprintf("\u2265%d", seq(8,0)),
     w = 1:5,
     stringsAsFactors = F
   )
@@ -114,12 +114,12 @@ generate_heatmap_legend_no_essential <- function() {
 }
 
 prof.level <- "gene"
-order.methods <- c("CB2", "PBNPA", "sgRSEA", "HitSelect", "MAGeCK", "RIGER", "RSA", "ScreenBEAM", "CRISPhieRmix")
+order.methods <- c("CB2", "PBNPA", "sgRSEA", "HitSelect", "MAGeCK", "RIGER", "RSA", "ScreenBEAM")#, "CRISPhieRmix")
 all_df$fdr[is.na(all_df$fdr)] <- 1
 all_df <- all_df %>% select(-stat)
 heatmap <- list()
 (col.pal <- RColorBrewer::brewer.pal(9, "OrRd"))
-#col.pal[1] <- "#FFFFFF"
+col.pal[1] <- "#FFFFFF"
 for (dset in unique(all_df$dataset)) {
   print(dset)
   ess <- all_df %>% filter(dataset == dset) %>% select(gene, essential) %>% distinct()
