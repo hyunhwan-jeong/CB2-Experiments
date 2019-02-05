@@ -2,7 +2,7 @@ library(tidyverse)
 library(here)
 source(here("scripts/draw_auc.R"))
 study <- "Sanson"
-methods <- c("CB2", "ScreenBEAM", "MAGeCK", "PBNPA", "RSA", "RIGER", "sgRSEA", "HitSelect")
+methods <- c("CB2", "ScreenBEAM", "MAGeCK", "PBNPA", "RSA", "RIGER", "sgRSEA", "HitSelect", "CRISPhieRmix")
 for(d in c("CRISPRn-A375", "CRISPRi-A375")) {
   filename <- here("figures/AUC-{d}.pdf") %>%  glue
   if(d == "CRISPRn-A375") {

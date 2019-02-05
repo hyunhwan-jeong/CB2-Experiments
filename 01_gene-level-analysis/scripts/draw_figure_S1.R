@@ -7,7 +7,7 @@ library(here)
 
 draw <- function(screen) {
   methods <- c("CB2", "MAGeCK", "PBNPA", "sgRSEA", "RSA", "RIGER", "ScreenBEAM")
-  methods <- c(methods, "PinAPL-Py", "HitSelect")
+  methods <- c(methods, "PinAPL-Py", "HitSelect", "CRISPhieRmix")
   
   df_rank <- lapply(methods, 
                     function(m) read_csv("results/Evers/{screen}/FDR/{m}.csv" %>% glue %>% here) %>% 
@@ -43,4 +43,4 @@ plot_grid(
   nrow = 1
 )
 
-save_plot(plot = last_plot(), filename = "figures/fig_S1.pdf", base_width = 16, base_height = 10)
+#save_plot(plot = last_plot(), filename = "figures/fig_S1.pdf", base_width = 16, base_height = 10)
