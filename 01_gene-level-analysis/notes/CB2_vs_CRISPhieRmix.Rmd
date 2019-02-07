@@ -1,0 +1,177 @@
+---
+title: "R Notebook"
+output:
+  html_document:
+    df_print: paged
+---
+
+
+```{r}
+library(here)
+library(tidyverse)
+library(CB2)
+library(CRISPhieRmix)
+library(pheatmap)
+```
+
+Load a data file. This is intially from https://doi.org/10.1016/j.celrep.2018.06.027.
+```{r}
+df_read <- read_tsv(here("../02_sgRNA-level-analysis/dat/Gsk3_readcount.txt"))
+```
+
+```{r}
+df_count <- df_read %>% unite("id", c("Gene", "gRNA")) %>% column_to_rownames("id")
+df_design <- tibble(sample_name = colnames(df_count)) %>% 
+  separate("sample_name", c("group", "rep"), sep = "_", remove = F)
+df_design
+```
+
+Run CB2 
+```{r}
+sgstat <- run_estimation(df_count, df_design, "Before", "Pos")
+sgstat
+```
+
+```{r}
+genestat <- measure_gene_stats(sgstat)
+genestat
+summary(sgstat$p_ts)
+```
+
+Running CRISPhieRmix
+
+```{r}
+library(DESeq2)
+dds <- DESeqDataSetFromMatrix(df_count, df_design, ~group)
+```
+
+
+```{r}
+dds <- DESeq(dds)
+df_ret <- results(dds) %>% as.data.frame
+head(df_ret)
+```
+
+```{r}
+summary(df_ret$pvalue)
+```
+
+```{r}
+df_ret$log2FoldChange[is.na(df_ret$log2FoldChange)] <- 0
+```
+
+```{r}
+df_cmix <- df_ret %>% rownames_to_column("id") %>% 
+  separate("id", c("gene", "gRNA"), sep = "_", extra="merge") %>% as.data.frame
+```
+
+```{r}
+df_cmix$gene <- factor(df_cmix$gene, levels = unique(df_cmix$gene))
+cmix <- CRISPhieRmix(df_cmix$log2FoldChange, df_cmix$gene)
+```
+
+```{r}
+df_cmixret <- tibble(gene = cmix$genes, locfdr = cmix$locfdr, fdr = cmix$FDR)
+```
+
+
+```{r}
+df_merge <- genestat %>% left_join(df_cmixret, by="gene")
+df_merge %>% ggplot(aes(x=-log10(fdr_ts), y=-log10(fdr))) +
+  geom_point() + xlab("CB2") + ylab("CRISPhieRmix")
+```
+
+As we have seen below, CB2 detect 205 genes as hits, and CRIPSPhieRmix detect 3,426 genes.
+
+```{r}
+print(sum(genestat$fdr_ts<0.1))
+print(sum(df_cmixret$fdr<0.1))
+```
+
+Only five genes were uniquely detected by CB2.
+
+```{r}
+df_merge %>% filter(fdr_ts < 0.1, fdr < 0.1) %>% nrow
+```
+
+Visualize heatmap (scaled by each row)
+
+```{r}
+genes <- df_merge %>% filter(fdr < 0.1,fdr_ts > 0.1) %>% pull(gene)
+print(genes %>% head)
+print(length(genes))
+
+df_norm <- df_count 
+for(j in 1:ncol(df_norm)) {
+  df_norm[,j] <- log2(df_norm[,j] / sum(df_norm[,j]) * 10^6+1)
+}
+
+df_norm %>% rownames_to_column("id") %>% separate(id, c("gene", "gRNA"), extra = "merge") %>% 
+  filter(gene %in% genes) %>% 
+  select(-gene) %>% 
+  column_to_rownames("gRNA") -> df_heatmap
+
+df_heatmap[rowSums(df_heatmap) > 0,] %>% 
+  pheatmap(show_rownames = F, scale = "row", main = "sgRNA heatmap of hit genes uniquely detected by CRISPhieRmix")
+
+```
+
+```{r}
+genes <- df_merge %>% filter(fdr < 0.1,fdr_ts < 0.1) %>% pull(gene)
+print(genes %>% head)
+print(length(genes))
+
+df_norm <- df_count 
+for(j in 1:ncol(df_norm)) {
+  df_norm[,j] <- log2(df_norm[,j] / sum(df_norm[,j]) * 10^6+1)
+}
+
+df_norm %>% rownames_to_column("id") %>% separate(id, c("gene", "gRNA"), extra = "merge") %>% 
+  filter(gene %in% genes) %>% 
+  select(-gene) %>% 
+  column_to_rownames("gRNA") -> df_heatmap
+
+df_heatmap[rowSums(df_heatmap) > 0,] %>% 
+  pheatmap(show_rownames = F, scale = "row", main = "sgRNA heatmap of hit genes detected by both.")
+```
+
+Visualize heatmap (no-scaling)
+
+```{r}
+genes <- df_merge %>% filter(fdr < 0.1,fdr_ts > 0.1) %>% pull(gene)
+print(genes %>% head)
+print(length(genes))
+
+df_norm <- df_count 
+for(j in 1:ncol(df_norm)) {
+  df_norm[,j] <- log2(df_norm[,j] / sum(df_norm[,j]) * 10^6+1)
+}
+
+df_norm %>% rownames_to_column("id") %>% separate(id, c("gene", "gRNA"), extra = "merge") %>% 
+  filter(gene %in% genes) %>% 
+  select(-gene) %>% 
+  column_to_rownames("gRNA") -> df_heatmap
+
+df_heatmap[rowSums(df_heatmap) > 0,] %>% 
+  pheatmap(show_rownames = F, scale = "none",  main = "sgRNA heatmap of hit genes uniquely detected by CRISPhieRmix")
+
+```
+
+```{r}
+genes <- df_merge %>% filter(fdr < 0.1,fdr_ts < 0.1) %>% pull(gene)
+print(genes %>% head)
+print(length(genes))
+
+df_norm <- df_count 
+for(j in 1:ncol(df_norm)) {
+  df_norm[,j] <- log2(df_norm[,j] / sum(df_norm[,j]) * 10^6+1)
+}
+
+df_norm %>% rownames_to_column("id") %>% separate(id, c("gene", "gRNA"), extra = "merge") %>% 
+  filter(gene %in% genes) %>% 
+  select(-gene) %>% 
+  column_to_rownames("gRNA") -> df_heatmap
+
+df_heatmap[rowSums(df_heatmap) > 0,] %>% 
+  pheatmap(show_rownames = F, scale = "none", main = "sgRNA heatmap of hit genes detected by both.")
+```

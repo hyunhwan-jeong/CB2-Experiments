@@ -30,10 +30,12 @@ for(dset in datasets) {
       TP <- sum((tmp$fdr <= fdr) & (tmp$essential == T))
       FP <- sum((tmp$fdr <= fdr) & (tmp$essential == F))
       FN <- sum((tmp$fdr > fdr) & (tmp$essential == T))
+      TN <- sum((tmp$fdr >= fdr) & (tmp$essential == F))
       
       precision <- TP / max(1,(TP+FP))
       recall <- TP / max(1,(TP+FN))
       fmeasure <- 2*(precision*recall)/(precision+recall)
+      accuracy <- (TP+TN) / (TP+FP+FN+TN)
       if(is.na(fmeasure)) fmeasure <- 0
       df.prof <- bind_rows(df.prof, tibble(dataset=dset,method=mat, FDR=fdr, value=fmeasure, measure="F-measure", TP=TP, FP=FP, FN=FN))
     }
