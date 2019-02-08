@@ -1,3 +1,4 @@
+setwd("01_gene-level-analysis/")
 lineplot_perf_cb2 <- function(all_df, col_ord) {
   require(tidyverse)
   require(cowplot)
@@ -36,7 +37,7 @@ lineplot_perf_cb2 <- function(all_df, col_ord) {
       geom_line(aes(colour=method, group=method), size=0.8) +
       geom_point(data = tmp %>% filter(method == "CB2"), aes(colour=method), size=2) +
       geom_line(data = tmp %>% filter(method == "CB2"), aes(colour=method, group=method), size=0.8) +
-      facet_grid(measure~dataset) + ylim(0,1) +
+      facet_grid(dataset~measure) + ylim(0,1) +
       xlab("FDR") + ylab("measure") +
       #scale_color_brewer(palette = "RdYlBu") +
       theme(axis.text.x = element_text(angle=90))) +
@@ -49,7 +50,7 @@ library(RobustRankAggreg)
 e <- scan("data/Evers/essential-genes.txt", what = "character")
 cb2 <- read_tsv("RRA_tmp/cb_rra_out.txt") %>% select(gene = group_id, fdr=FDR) %>% 
   mutate(essential = gene %in% e) %>%
-  mutate(method = "CB2_alpha-RRA") 
+  mutate(method = "CB2-RRA") 
 mageck <- read_tsv("RRA_tmp/sample1.gene.low.txt") %>% select(gene = group_id, fdr=FDR) %>% 
   mutate(essential = gene %in% e) %>% 
   mutate(method = "MAGeCK")
@@ -81,9 +82,12 @@ cb2_rra <- aggregateRanks(rmat = r, method = "RRA") %>%
 
 cb2_org <- read_csv("results/Evers/CRISPRn-RT112/AUC/CB2.csv") %>% 
   select(gene, fdr) %>% 
-  mutate(method = "CB2_Fisher") %>% 
+  mutate(method = "CB2") %>% 
   mutate(essential = gene %in% e)
 
-bind_rows(cb2_org, cb2, cb2_rra, mageck) %>% 
+bind_rows(cb2_org, cb2, mageck) %>% 
   as.data.frame() %>% 
-  lineplot_perf_cb2(c("CRISPRn-RT112"))
+  lineplot_perf_cb2(c("CRISPRn-RT112")) +
+  theme(legend.position = "bottom")
+
+
