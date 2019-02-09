@@ -77,7 +77,7 @@ for(dset in datasets) {
     theme(axis.text.x = element_text(angle=90)) +
     theme(strip.text.x = element_text(face="bold")) +
     theme(legend.position = "none") +
-    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+    theme(axis.text.x = element_text(angle = 45, hjust = 1)) +theme(aspect.ratio = 0.8)
   
 }
 
@@ -147,7 +147,7 @@ for (dset in unique(all_df$dataset)) {
   hm <-
     pheatmap(
       column_to_rownames(x, prof.level) %>%
-        #filter(essential > 0) %>%
+        filter(essential > 0) %>%
         select(order.methods) %>% t,
       scale = "none",
       cluster_cols = F,
@@ -158,11 +158,11 @@ for (dset in unique(all_df$dataset)) {
       show_rownames = T,
       show_colnames = F,
       annotation_legend = F,
-      annotation_col = tmp,
+      #annotation_col = tmp,
       border_color = "black",
-      annotation_colors = list(
-        "Essentiality" = c("Essential" = "#000000", "Non-essential" = "#bdbdbd")
-      ),
+      # annotation_colors = list(
+      #   "Essentiality" = c("Essential" = "#000000", "Non-essential" = "#bdbdbd")
+      # ),
       cellheight = 12,
     )
   heatmap[[dset]] <- hm$gtable
@@ -197,4 +197,4 @@ fig2 <- plot_grid(top,
                   nrow = 2,
                   rel_heights = c(9,1))
 fig2
-#save_plot("figures/fig2.pdf", fig2, base_width = 14, base_height = 8)
+save_plot("figures/fig2.pdf", fig2, base_width = 14, base_height = 8)
