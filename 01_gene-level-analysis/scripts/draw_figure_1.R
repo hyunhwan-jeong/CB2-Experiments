@@ -15,7 +15,7 @@ mk_df <- function(f) {
     mutate(essential = gene %in% e)
 }
 
-all_df <- lapply(files, mk_df) %>% bind_rows
+all_df <- lapply(files, mk_df) %>% bind_rows %>% filter(method != "CRISPhieRmix")
 
 datasets <- c("CRISPRn-RT112", "CRISPRn-UMUC3", "CRISPRi-RT112")
 
@@ -50,7 +50,8 @@ for(dset in datasets) {
     theme(axis.text.x = element_text(angle=90)) +
     theme(strip.text.x = element_text(face="bold")) +
     theme(legend.position = "none") +
-    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+    theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+    theme(aspect.ratio = 0.8)
   
 }
 
@@ -165,4 +166,4 @@ fig1 <- plot_grid(top,
                   bottom,
                   nrow = 2,
                   rel_heights = c(9,1))
-save_plot("figures/fig1.pdf", fig1, base_width = 14, base_height = 10)
+#save_plot("figures/fig1.pdf", fig1, base_width = 14, base_height = 10)
