@@ -8,4 +8,4 @@ the following command has generated `sample1.*.txt` files (output files of MAGeC
 mageck test -k input.tsv -c B1,B2,B3 -t A1,A2,A3
 ```
 
-To create the plot of the comparison, please execute `01_run-RRA.R` and `02_draw-lineplot.R`, sequentially. 
+To create the plot of the comparison, please execute `01_run-RRA.R` and `02_draw-lineplot.R`, sequentially. `fig-RRA` will be created in `01_gene-level-analysis/figures` after running both scripts.
