@@ -1,10 +1,8 @@
 # CB2-Experiments
 
-`CB2-Experiments` is the repository of scripts and data of experiments were performed to benchmark the performance of CB<sup>2</sup>.
+`CB2-Experiments` is the repository of scripts and data of experiments were performed to compare the performance of CB<sup>2</sup> to other methods (HitSelect, MAGeCK, PBNPA, PinAPL-Py, RIGER, RSA, ScreenBEAM, sgRSEA).
 
-## Structure of the repository
-
-`CB2-Experiments` contains four different directories. Each directory contains `README.md` to help running scripts.
+`CB2-Experiments` contains four different directories. Each directory contains `README.md` to assist running scripts.
 
 | Folder name               | Contents                                                                                                                           |
 |---------------------------|------------------------------------------------------------------------------------------------------------------------------------|
