@@ -1,4 +1,4 @@
-methods = ["CB2", "MAGeCK", "PBNPA", "sgRSEA", "RIGER", "RSA", "ScreenBEAM", "CRISPhieRmix"]
+methods = ["CB2", "MAGeCK", "PBNPA", "sgRSEA", "RIGER", "RSA", "ScreenBEAM"]
 datasets = ["CRISPRn-RT112", "CRISPRi-RT112", "CRISPRn-UMUC3"]
 
 rule all:
