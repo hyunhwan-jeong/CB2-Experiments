@@ -80,4 +80,4 @@ df_nontarget %>%
 
 plot_grid(ggp, ggv, nrow=1, rel_widths = c(1,1), labels = "AUTO") -> pg
 pg
-save_plot("figures/fig4_Sanson.pdf", pg, base_height = 4, base_width = 10)
+save_plot("figures/fig-S12.pdf", pg, base_height = 4, base_width = 10)

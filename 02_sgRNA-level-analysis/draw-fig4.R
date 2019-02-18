@@ -60,8 +60,8 @@ plot_heatmap <- function(obj, df_sg, main_title) {
   df_rc %>% 
     `+`(1) %>% log2 %>%
     pheatmap(
-      #scale = "row",
-      cluster_cols = F,
+      scale = "row",
+      #cluster_cols = F,
       #cluster_rows = F,
       show_rownames = F,
       border_color = NA,
@@ -80,7 +80,7 @@ generate_figure <- function(obj, cutoff = 0.01, labels = c("A", "B")) {
     filter(p_value_twosided < cutoff, p.twosided > cutoff) 
   obj$merged_sg  %>% 
     filter(p_value_twosided < cutoff, p.twosided > cutoff) %>% 
-    plot_heatmap(obj, ., "cb2") -> hm.cc
+    plot_heatmap(obj, ., "CB2") -> hm.cc
   obj$merged_sg %>% 
     filter(p_value_twosided > cutoff, p.twosided < cutoff) %>% 
     plot_heatmap(obj, ., "MAGeCK") -> hm.mg
@@ -108,4 +108,4 @@ plot_grid(
   Gsk3 %>% generate_figure(labels = c("A","B")), 
   Tnf %>% generate_figure(labels = c("C", "D")),
   nrow = 2,
-  labels = "AUTO") %>% save_plot("figures/heatmap.png", ., base_width = 6, base_height = 8)
+  labels = "AUTO") %>% save_plot("figures/fig4.png", ., base_width = 6, base_height = 8)

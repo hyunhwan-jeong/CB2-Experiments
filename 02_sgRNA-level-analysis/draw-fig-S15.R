@@ -1,5 +1,6 @@
 library(tidyverse)
 library(cowplot)
+library(here)
 draw_mean_variance_plot <- function(df_count, title) {
   require(tidyverse)
   require(matrixStats)
@@ -15,17 +16,19 @@ draw_mean_variance_plot <- function(df_count, title) {
   tibble(m = log10(means), v = log10(vars)) %>% 
     ggplot(aes(x=m,y=v)) +
     geom_point(alpha=0.5, size = 0.5, color = "grey") + 
-    geom_abline(slope = 1, intercept = 0, color="red") + ggtitle(title) + xlab("log10(meanCPM)") + ylab("log01(varianceCPM)")
+    geom_abline(slope = 1, intercept = 0, color="red") + 
+    geom_smooth() +
+    ggtitle(title) + xlab("log10(meanCPM)") + ylab("log01(varianceCPM)")
 }
 
-p1 <- read_csv("01_gene-level-analysis/data/Evers/CRISPRn-RT112.csv")  %>% 
+p1 <- read_csv("../01_gene-level-analysis/data/Evers/CRISPRn-RT112.csv")  %>% 
   select(sgRNA, B1,B2, B3) %>% column_to_rownames("sgRNA") %>% draw_mean_variance_plot(title = "CRISPRn-RT112 (T0)")
 
-p2 <- read_tsv("01_gene-level-analysis/data/Sanson/CRISPRn-A375.tsv")  %>% 
+p2 <- read_tsv("../01_gene-level-analysis/data/Sanson/CRISPRn-A375.tsv")  %>% 
   select(sgRNA, RepA, RepB, RepC) %>% column_to_rownames("sgRNA") %>% draw_mean_variance_plot(title = "CRISPRn-A375")
 
-p3 <- read_tsv("02_sgRNA-level-analysis/dat/Gsk3_readcount.txt")  %>% 
+p3 <- read_tsv("../02_sgRNA-level-analysis/dat/Gsk3_readcount.txt")  %>% 
   select(gRNA, Before_1, Before_2, Before_3, Before_4) %>% column_to_rownames("gRNA") %>% draw_mean_variance_plot(title = "Gsk3 (Before)")
 
 plot_grid(p1, p2, p3, nrow = 1, labels = "AUTO")
-save_plot("02_sgRNA-level-analysis/figures/mean_variance.png", last_plot(), base_height = 3, base_width = 8)
+save_plot("figures/fig-S15.png", last_plot(), base_height = 3, base_width = 8)
