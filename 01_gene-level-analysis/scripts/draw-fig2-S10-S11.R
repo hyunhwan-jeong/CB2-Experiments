@@ -59,16 +59,16 @@ plot.dot.bar <- function(gene.name,
   plot_grid(plot.dots, plot.bar, ncol = 1)
 }
 
-plot_dot_and_bar <- function(gene.name) {
+plot_dot_and_bar <- function(gene.name, file.name) {
   plots <- list()
   for(dataset in c("CRISPRn-RT112", "CRISPRn-UMUC3", "CRISPRi-RT112")) {
     plots[[dataset]] <- plot.dot.bar(gene.name, dataset, 3)
   }
   
   plot_merged <- plot_grid(plotlist = plots, labels = "AUTO", nrow=1)
-  save_plot("figures/fig_dotandbar-{gene.name}.pdf" %>% glue, plot_merged, base_width = 14, base_height = 12)
+  save_plot(file.name, plot_merged, base_width = 14, base_height = 12)
 }
 
-plot_dot_and_bar("RPL5")
-plot_dot_and_bar("COPS8")
-plot_dot_and_bar("RPL27")
+plot_dot_and_bar("RPL5", file.name = "figures/fig2.pdf") # Fig. 2
+plot_dot_and_bar("COPS8", file.name = "figures/fig-S10.pdf") # Supplemental Fig. 10
+plot_dot_and_bar("RPL27", file.name = "figures/fig-S11.pdf") # Supplemental Fig. 11

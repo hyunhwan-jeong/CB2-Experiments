@@ -1,0 +1,5 @@
+library(here)
+source(here("scripts/draw-fig1_Evers.R"))
+source(here("scripts/draw-fig1_Sanson.R"))
+plot_grid(fig1, fig2, ncol=1, rel_heights = c(3,2)) 
+save_plot(filename = here("figures/fig1.pdf"), last_plot(), base_width = 14, base_height = 14)

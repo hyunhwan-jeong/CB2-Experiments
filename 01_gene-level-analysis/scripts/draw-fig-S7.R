@@ -20,4 +20,4 @@ all_df <- lapply(files, mk_df) %>% bind_rows
 datasets <- c("CRISPRn-A375", "CRISPRi-A375")
 
 lineplot_perf(all_df, col_ord = datasets)
-#save_plot(here("figures/fig_S3.pdf"), last_plot(), base_width = 8, base_height = 6)
+save_plot(here("figures/fig-S7.pdf"), last_plot(), base_width = 8, base_height = 6)

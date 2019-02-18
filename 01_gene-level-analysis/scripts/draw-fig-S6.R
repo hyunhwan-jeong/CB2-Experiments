@@ -21,4 +21,5 @@ datasets <- c("CRISPRn-RT112", "CRISPRn-UMUC3", "CRISPRi-RT112")
 methods <- c("CB2", "ScreenBEAM", "PBNPA", "sgRSEA", "HitSelect", "MAGeCK", "RIGER", "RSA", "PinAPL-Py")
 
 heatmap_fdr(all_df %>% select(-stat), methods, datasets, e)
-save_plot("figures/fig1-heatmap-gene.pdf", last_plot(), base_height = 12)
+# NOTE: If you export the plot as a PDF file, the file will not show some unicode character properly.
+save_plot("figures/fig-S6.png", last_plot(), base_height = 12) 
