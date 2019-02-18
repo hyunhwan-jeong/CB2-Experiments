@@ -60,7 +60,7 @@ If you plan to run wrapper scripts of `RIGER` and `RSA`, you have to download an
 * `RIGER` is available to download at https://github.com/broadinstitute/rigerj.
 * `RSA` is available to download at https://admin-ext.gnf.org/publications/RSA/.
 
-Please use the below command if you haven't install `MAGeCK` and want to run any scripts related to the method:
+Please use the below command if you haven't installed `MAGeCK` and want to run any scripts related to the method:
 
 ```
 pip install mageck --user
@@ -82,4 +82,4 @@ RSA_PATH <- "/Users/hyunhwan/Projects/InProgress/RSA" # path of `RSA`
   
 ## Questions
 
-If you have any questions or issues with the respository, please add issue or send an email to `hyunhwaj@bcm.edu`.
+If you have any questions or issues with the repository, please add your issue to this repository or send an email to `hyunhwaj@bcm.edu`.
