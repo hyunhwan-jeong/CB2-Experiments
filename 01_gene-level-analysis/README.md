@@ -32,3 +32,5 @@ draw-fig2-S10-S11.R   |  Yes         | The script to generate dot plots and boxp
 draw-upset.R          |  Yes         | The script to visualize how many essential genes were newly found by CB<sup>2</sup>
 draw_auc.R            |  No          | The file contains a function to visualize an AUC curve.
 generate_auc_output.R |  No          | The script to convert an output from the Snakemake pipeline to another proper format to visualize an AUC curve
+
+Please read [RRA_experiment/README.md](RRA_experiment/README.md) to see details regarding the performance comparison of p-value combined methods (Fisher's method vs. alpha-RRA).
