@@ -1,4 +1,3 @@
-setwd("01_gene-level-analysis/")
 lineplot_perf_cb2 <- function(all_df, col_ord) {
   require(tidyverse)
   require(cowplot)
@@ -48,27 +47,20 @@ lineplot_perf_cb2 <- function(all_df, col_ord) {
 library(tidyverse)
 library(RobustRankAggreg)
 e <- scan("data/Evers/essential-genes.txt", what = "character")
-cb2 <- read_tsv("RRA_tmp/cb_rra_out.txt") %>% select(gene = group_id, fdr=FDR) %>% 
+cb2 <- read_tsv("RRA_experiment/cb_rra_out.txt") %>% select(gene = group_id, fdr=FDR) %>% 
   mutate(essential = gene %in% e) %>%
   mutate(method = "CB2-RRA") 
-mageck <- read_tsv("RRA_tmp/sample1.gene.low.txt") %>% select(gene = group_id, fdr=FDR) %>% 
+mageck <- read_tsv("RRA_experiment/sample1.gene.low.txt") %>% select(gene = group_id, fdr=FDR) %>% 
   mutate(essential = gene %in% e) %>% 
   mutate(method = "MAGeCK")
 
-read_tsv("RRA_tmp/sample1.plow.txt") %>% select(sgrna, symbol, plow = p.low) %>% 
+read_tsv("RRA_experiment/sample1.plow.txt") %>% select(sgrna, symbol, plow = p.low) %>% 
   mutate(rank = rank(plow) / n()) %>% 
   select(-plow) %>% 
   spread(sgrna, rank) %>% column_to_rownames("symbol") %>% as.matrix -> r
 
-# mageck_rra <- aggregateRanks(rmat = r, method = "RRA") %>%
-#   remove_rownames() %>% 
-#   select(gene = Name, fdr = Score) %>% 
-#   mutate(fdr = p.adjust(fdr, method = "fdr")) %>% 
-#   mutate(method = "MAGeCK_RRA") %>% 
-#   mutate(essential = gene %in% e)
 
-
-read_tsv("RRA_tmp/cb_rra.txt") %>% select(sgrna, symbol, plow) %>% 
+read_tsv("RRA_experiment/cb_rra.txt") %>% select(sgrna, symbol, plow) %>% 
   mutate(rank = rank(plow) / n()) %>% 
   select(-plow) %>% 
   spread(sgrna, rank) %>% column_to_rownames("symbol") %>% as.matrix -> r
@@ -89,5 +81,7 @@ bind_rows(cb2_org, cb2, mageck) %>%
   as.data.frame() %>% 
   lineplot_perf_cb2(c("CRISPRn-RT112")) +
   theme(legend.position = "bottom")
+
+save_plot("figures/fig-RRA.pdf", last_plot())
 
 
