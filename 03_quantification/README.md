@@ -28,7 +28,7 @@ wget ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR376/ERR376998/ERR376998.fastq.gz
 gunzip ERR376998.fastq.gz
 ```
 
-### How to generate output
+### How to run and generate output
 
 ```
 snakemake --snakefile Snakefile_AGO.smk
