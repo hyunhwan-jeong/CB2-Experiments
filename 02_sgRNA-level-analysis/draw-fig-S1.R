@@ -31,4 +31,4 @@ p3 <- read_tsv("../02_sgRNA-level-analysis/dat/Gsk3_readcount.txt")  %>%
   select(gRNA, Before_1, Before_2, Before_3, Before_4) %>% column_to_rownames("gRNA") %>% draw_mean_variance_plot(title = "Gsk3 (Before)")
 
 plot_grid(p1, p2, p3, nrow = 1, labels = "AUTO")
-save_plot("figures/fig-S15.png", last_plot(), base_height = 3, base_width = 8)
+save_plot("figures/fig-S1.png", last_plot(), base_height = 3, base_width = 8)

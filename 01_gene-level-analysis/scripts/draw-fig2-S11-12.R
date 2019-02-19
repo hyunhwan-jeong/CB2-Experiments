@@ -70,5 +70,5 @@ plot_dot_and_bar <- function(gene.name, file.name) {
 }
 
 plot_dot_and_bar("RPL5", file.name = "figures/fig2.pdf") # Fig. 2
-plot_dot_and_bar("COPS8", file.name = "figures/fig-S10.pdf") # Supplemental Fig. 10
-plot_dot_and_bar("RPL27", file.name = "figures/fig-S11.pdf") # Supplemental Fig. 11
+plot_dot_and_bar("COPS8", file.name = "figures/fig-S11.pdf") # Supplemental Fig. 10
+plot_dot_and_bar("RPL27", file.name = "figures/fig-S12.pdf") # Supplemental Fig. 11

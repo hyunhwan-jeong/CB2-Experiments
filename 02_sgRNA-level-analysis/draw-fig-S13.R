@@ -3,113 +3,81 @@ library(pheatmap)
 library(cowplot)
 library(RColorBrewer)
 library(eulerr)
-library(here)
-CRISPR.RT112 <- list()
-CRISPR.UMUC3 <- list()
-CRISPRi.RT112 <- list()
-read_csv("dat/CRISPR.RT112.csv") %>% dplyr::rename(gene=Gene) -> CRISPR.RT112$readcount
-read_csv("dat/CRISPR.UMUC3.csv") -> CRISPR.UMUC3$readcount
-read_csv("dat/CRISPRi.RT112.csv") -> CRISPRi.RT112$readcount
+library(ggsci)
 
-rename_cols <- function(obj) {
-  obj$readcount %>%
-    dplyr::rename("T0 1" = A1,
-                  "T0 2" = A2,
-                  "T0 3" = A3,
-                  "T1 1" = B1,
-                  "T1 2" = B2,
-                  "T1 3" = B3) -> obj$readcount
-  obj
-}
-
-CRISPR.RT112 %>% rename_cols() -> CRISPR.RT112
-CRISPR.UMUC3 %>% rename_cols() -> CRISPR.UMUC3
-CRISPRi.RT112 %>% rename_cols() -> CRISPRi.RT112
+CRISPRn <- list()
+read_delim("dat/CRISPRn_readcount.txt", delim = "\t") %>%
+  rename(sgRNA = sgRNA,
+         gene = Gene,
+         "plasmid" = pDNA,
+         "Rep A" = RepA,
+         "Rep B" = RepB,
+         "Rep C" = RepC) %>% unite("sgRNA", c("gene", "sgRNA")) -> CRISPRn$readcount
 
 read_and_merge <- function(obj, screen) {
-  sprintf("dat/evers_sgoutput/%s/CB2_sgRNA.csv", screen) %>% read_csv() -> obj$cb2_sg
-  sprintf("dat/evers_sgoutput/%s/MAGeCK_sgRNA.csv", screen) %>%
-    read_csv() -> obj$mageck_sg
-  obj$cb2_sg %>% left_join(obj$mageck_sg,
-                           by = c("sgRNA"="sgrna")) -> obj$merged_sg
+  sprintf("dat/%s_cb2_sgrna.csv", screen) %>% read_csv() -> obj$cb2_sg
+  sprintf("dat/%s_mageck_sgrna.txt", screen) %>% read.table(sep="\t", stringsAsFactors = F, header = T) %>% unite("id", c("Gene", "sgrna")) -> obj$mageck_sg
+  obj$cb2_sg %>% left_join(obj$mageck_sg, by = c("sgRNA"="id")) -> obj$merged_sg
   obj
 }
 
+CRISPRn %>% read_and_merge("CRISPRn") -> CRISPRn
 
-CRISPR.RT112 %>% read_and_merge("CRISPR.RT112") -> CRISPR.RT112
-CRISPR.UMUC3 %>% read_and_merge("CRISPR.UMUC3") -> CRISPR.UMUC3
-CRISPRi.RT112 %>% read_and_merge("CRISPRi.RT112") -> CRISPRi.RT112
+CRISPRn$merged_sg %>% filter(str_detect(sgRNA, "^NO_CURRENT")) %>% select(p_ts, p.twosided) %>% summary
 
-normalize <- function(obj) {
-  for(i in 3:ncol(obj$readcount)) {
-    s <- sum(obj$readcount[,i])
-    obj$readcount[,i] <- obj$readcount[,i] / s * 10^6
-  }
-  obj
+CRISPRn$merged_sg %>% filter(str_detect(sgRNA, "^NO_CURRENT")) %>% 
+  select(sgRNA, logFC, CB2=p_ts, MAGeCK=p.twosided) -> df_nontarget
+
+CRISPRn$cb2_sg %>% select(sgRNA, P = p_ts) %>% mutate(label = str_detect(sgRNA, "^NO_CURRENT") %>% as.integer, method = "CB2") -> cb2
+CRISPRn$mageck_sg %>% select(id, P = p.twosided) %>% mutate(label = str_detect(id, "^NO_CURRENT") %>% as.integer, method = "MAGeCK") -> mageck
+
+df_fdr <- tibble()
+for(eFDR in c(0.001, 0.005, 0.01, 0.05, 0.1, 0.2)) {
+  df_fdr <- bind_rows(
+    df_fdr,
+    tibble(
+      "P-value" = eFDR,
+      "method" = "CB2",
+      "Specificity (1-oFDR)" = 1 - sum(df_nontarget$CB2 < eFDR) / nrow(df_nontarget)
+    )
+  )    
+  df_fdr <- bind_rows(
+    df_fdr,
+    tibble(
+      "P-value" = eFDR,
+      "method" = "MAGeCK",
+      "Specificity (1-oFDR)" = 1 - sum(df_nontarget$MAGeCK < eFDR) / nrow(df_nontarget)
+    )
+  )    
 }
 
-CRISPR.RT112 %>% normalize() -> CRISPR.RT112
-CRISPR.UMUC3 %>% normalize() -> CRISPR.UMUC3
-CRISPRi.RT112 %>% normalize() -> CRISPR.RT112i
+as.character(df_fdr$`P-value`) -> df_fdr$`P-value`
 
-plot_heatmap <- function(obj, df_sg, main_title) {
-  if(nrow(df_sg) == 0) {
-    return(NULL)
-  }
-  dplyr::select(df_sg, sgRNA) %>%
-    left_join(obj$readcount, by = "sgRNA") %>%
-    as.data.frame %>%
-    column_to_rownames("sgRNA") %>%
-    dplyr::select(-gene) -> df_rc
-  df_rc %>%
-    `+`(1) %>% log2 %>%
-    pheatmap(
-      scale = "row",
-      #cluster_cols = F,
-      #cluster_rows = F,
-      show_rownames = F,
-      border_color = NA,
-      legend = F,
-      #annotation_row = df_an,
-      clustering_method = "average",
-      #clustering_distance_cols = "correlation",
-      treeheight_row = 0,
-      #treeheight_col = 0,
-      main = main_title,
-      silent = T) #%>% .$gtable
-}
+(df_fdr %>% 
+    rename(`Specificity`= `Specificity (1-oFDR)`) %>%
+    ggplot(aes(x=`P-value`, y=`Specificity`)) +
+    geom_point(aes(color=method, shape=method), size=2.5) +
+    geom_line(aes(group=method, color = method), size=1) + 
+    scale_color_npg() +
+    ylim(0,1) +
+    NULL -> ggp)
 
-generate_figure <- function(obj, cutoff = 0.01, labels = c("A", "B")) {
-  #df_sg <- obj$merged_sg  %>%
-  #  filter(p_value_neg < cutoff, p.low > cutoff)
-  obj$merged_sg  %>%
-    filter(p_value_neg < cutoff, p.low < cutoff) %>%
-    plot_heatmap(obj, ., "CC2 & MAGeCK") -> hm.cc
-  obj$merged_sg %>%
-    filter(p_value_neg > cutoff, p.low < cutoff) %>%
-    plot_heatmap(obj, ., "MAGeCK") -> hm.mg
-  
-  obj$merged_sg %>%
-    select(CC2 = p_value_neg, MAGeCK = p.low) %>%
-    mutate(CC2 = CC2 < cutoff,
-           MAGeCK = MAGeCK < cutoff) %>%
-    euler %>%
-    plot(quantities=T,
-         fill = c("#f8e4e7", "#fbfbe5"),
-         edges = c("#b83f40", "#bfc160")) -> vd
-  plot_grid(plot_grid(hm.cc$gtable, hm.mg$gtable, scale = 0.8, nrow = 1),
-            plot_grid(vd, scale=0.8),
-            nrow=1,
-            rel_widths = c(2,1),
-            labels = labels)
-}
 
-CRISPRi.RT112 %>% generate_figure()
 
-plot_grid(
-  CRISPR.RT112 %>% generate_figure(labels = c("A", "B")),
-  CRISPR.UMUC3 %>% generate_figure(labels = c("C", "D")),
-  CRISPRi.RT112 %>% generate_figure(labels = c("E", "F")),
-  ncol=1) %>%
-  save_plot("figures/fig-S13.pdf",., base_width = 8, base_height = 12)
 
+df_nontarget %>%
+  gather(method, `-log10(P-value)`, -sgRNA, -logFC) %>%
+  mutate(`-log10(P-value)` = -log10(`-log10(P-value)`),
+         sig = `-log10(P-value)` >= -log10(0.01)) %>%
+  ggplot(aes(x=logFC, y=`-log10(P-value)`)) +
+  geom_point(alpha=0.25, size=0.7, aes(color=sig)) +
+  geom_hline(yintercept =-log10(0.01), color = "blue", alpha=0.5) +
+  theme(legend.position = "none") +
+  facet_grid(~method) + 
+  scale_color_manual(values = c("grey", "red")) +
+  scale_y_continuous( limits = c(0, 50)) -> ggv
+
+
+plot_grid(ggp, ggv, nrow=1, rel_widths = c(1,1), labels = "AUTO") -> pg
+pg
+save_plot("figures/fig-S13.pdf", pg, base_height = 4, base_width = 10)

@@ -43,4 +43,4 @@ plot_grid(
   nrow = 1
 )
 
-save_plot(plot = last_plot(), filename = "figures/fig-S1.pdf", base_width = 16, base_height = 10)
+save_plot(plot = last_plot(), filename = "figures/fig-S2.pdf", base_width = 16, base_height = 10)
