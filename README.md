@@ -39,11 +39,10 @@ If you don't have some of the packages than please use the following installatio
 
 ```
 # Install packages in `cran`
-install.packages(c("PBNPA", "RColorBrewer", "argparse", "cowplot", "eulerr", "gghighlight", "ggsci", "glue", "here", "pheatmap", "precrec", "sgRSEA", "tidyverse"))
+install.packages(c("PBNPA", "RColorBrewer", "argparse", "cowplot", "eulerr", "gghighlight", "ggsci", "glue", "here", "pheatmap", "precrec", "sgRSEA", "tidyverse", "CB2"))
 
 # Install packages `devtools`
 install.packages("devtools")
-devtools::install_github("hyunhwaj/CB2")
 devtools::install_github("jyyu/ScreenBEAM")
 ```
 
