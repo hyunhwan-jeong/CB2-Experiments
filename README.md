@@ -13,7 +13,7 @@
 
 ## Requirements
 
-Below bash command line enumerate the list of required/used R packages to use the script in `CB2-Experiments`.
+The following bash command line enumerate the list of required/used R packages to use the script in `CB2-Experiments`.
 
 ```
 $ grep -e "^library" * -R | sed 's/:/ /g' | awk '{ print $2 }' | sort -u | sed 's/library(//g' | sed 's/)//g'
@@ -35,15 +35,14 @@ sgRSEA
 tidyverse
 ```
 
-If you don't have some of the packages than please use below installation code in `R`:
+If you don't have some of the packages than please use the following installation snippet in `R`:
 
 ```
 # Install packages in `cran`
-install.packages(c("PBNPA", "RColorBrewer", "argparse", "cowplot", "eulerr", "gghighlight", "ggsci", "glue", "here", "pheatmap", "precrec", "sgRSEA", "tidyverse"))
+install.packages(c("PBNPA", "RColorBrewer", "argparse", "cowplot", "eulerr", "gghighlight", "ggsci", "glue", "here", "pheatmap", "precrec", "sgRSEA", "tidyverse", "CB2"))
 
 # Install packages `devtools`
 install.packages("devtools")
-devtools::install_github("hyunhwaj/CB2")
 devtools::install_github("jyyu/ScreenBEAM")
 ```
 
@@ -58,20 +57,20 @@ If you plan to run wrapper scripts of `RIGER` and `RSA`, you have to download an
 * `RIGER` is available to download at https://github.com/broadinstitute/rigerj.
 * `RSA` is available to download at https://admin-ext.gnf.org/publications/RSA/.
 
-Please use the below command if you haven't installed `MAGeCK` and want to run any scripts related to the method:
+Please use the following command if you haven't installed `MAGeCK` and want to run any scripts related to the method:
 
 ```
 pip install mageck --user
 ```
 
-In `01_gene-level-analysis/wrapper/run_RIGER.R`, please change line 20 and 21 like below:
+In `01_gene-level-analysis/wrapper/run_RIGER.R`, please change line 20 and 21 as follows:
 
 ```
 RIGER_PATH <- "/Users/hyunhwan/Projects/InProgress/rigerj" # path of `RIGER`
 RIGER_VERSION <- "2.0.2" # path of the version of `RIGER`
 ```
 
-In `01_gene-level-analysis/wrapper/run_RSA`, please change line 21 and 22 like below:
+In `01_gene-level-analysis/wrapper/run_RSA`, please change line 21 and 22 as follows:
 
 ```
 PY3_PATH <- "/Users/hyunhwan/miniconda3/bin/python3" # path of `python3`, can lookup using `which python3`
