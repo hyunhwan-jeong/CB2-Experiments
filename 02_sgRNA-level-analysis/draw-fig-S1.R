@@ -15,10 +15,10 @@ draw_mean_variance_plot <- function(df_count, title) {
   
   tibble(m = log10(means), v = log10(vars)) %>% 
     ggplot(aes(x=m,y=v)) +
-    geom_point(alpha=0.5, size = 0.5, color = "grey") + 
+    geom_point(alpha=0.5, size = 0.5) + 
     geom_abline(slope = 1, intercept = 0, color="red") + 
-    geom_smooth() +
-    ggtitle(title) + xlab("log10(meanCPM)") + ylab("log01(varianceCPM)")
+    geom_smooth(method = "gam", se = FALSE) +
+    ggtitle(title) + xlab(bquote(log[10]~"(meanCPM)")) + ylab(bquote(log[10]~"(varianceCPM)"))
 }
 
 p1 <- read_csv("../01_gene-level-analysis/data/Evers/CRISPRn-RT112.csv")  %>% 
