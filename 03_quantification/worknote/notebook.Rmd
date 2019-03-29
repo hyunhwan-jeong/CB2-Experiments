@@ -30,7 +30,6 @@ df_map <- read_delim("mappability.tsv", "\t") %>% arrange(desc(CB2)) %>%
   mutate(data_plot_name = str_replace_all(data_plot_name, "_", "\n"))
 p <- df_map %>% 
   gather(method, mappability, -data_plot_name) %>%
-  filter(data_plot_name != "Parnas_TNF_plasmid_LibAB") %>%
   ggplot(aes(x=data_plot_name, y=mappability*100)) + 
   xlim(head(df_map$data_plot_name,-1)) +
   geom_line(aes(colour=method, group=method)) +

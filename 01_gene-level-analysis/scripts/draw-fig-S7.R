@@ -1,8 +1,5 @@
-library(tidyverse)
 library(here)
-library(cowplot)
-library(pheatmap)
-source(here("utils/heatmap_fdr.R"))
+source(here("utils/lineplot.R"))
 
 files <- Sys.glob("results/Evers/*/FDR/*")
 
@@ -12,16 +9,13 @@ mk_df <- function(f) {
     mutate(
       method = basename(f) %>% str_replace(".csv", ""),
       dataset = f %>% strsplit("/")) %>% 
-    mutate(dataset=dataset[[1]][3])
+    mutate(dataset=dataset[[1]][3]) %>%
+    mutate(essential = gene %in% e)
 }
 
-all_df <- lapply(files, mk_df) %>% bind_rows %>% 
-  mutate(method = ifelse(method == "HitSelect", "HiTSelect", method))
+all_df <- lapply(files, mk_df) %>% bind_rows
 
 datasets <- c("CRISPRn-RT112", "CRISPRn-UMUC3", "CRISPRi-RT112")
-methods <- c("CB2", "ScreenBEAM", "PBNPA", "sgRSEA", "HiTSelect", "MAGeCK", "RIGER", "RSA", "PinAPL-Py") 
 
-heatmap_fdr(all_df %>% select(-stat), methods, datasets, e)
-# NOTE: If you export the plot as a PDF file, the file will not show some unicode character properly.
-#save_plot("figures/fig-S7.png", last_plot(), base_height = 12) 
-save_plot("figures/fig-S7.pdf", last_plot(), base_height = 12) 
+lineplot_perf(all_df, col_ord = datasets)
+save_plot(here("figures/fig-S7.pdf"), last_plot(), base_width = 8, base_height = 6)

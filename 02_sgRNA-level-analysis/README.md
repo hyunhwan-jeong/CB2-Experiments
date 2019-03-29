@@ -6,8 +6,8 @@ There are three different subdirectories in the directory. `dat` contains files 
 
 File name      | Executable  | Function
 ---------------|-------------|------------------------------
-draw-fig-S12.R | Yes         | The script to generate FPR plots of non-targeting sgRNA analysis using Sanson et al.'s data.
-draw-fig-S13.R | Yes         | The script to create Heatmaps and Venn diagrams to reveal discrepancy of sgRNA statistics between CB<sup>2</sup> and MAGeCK
-draw-fig-S15.R | Yes         | The script to create mean-variance plots to claim CRISPR pooled data can be under/over-dispersed. 
+draw-fig-S1.R  | Yes         | The script to create mean-variance plots to claim CRISPR pooled data can be under/over-dispersed. 
+draw-fig-S14.R | Yes         | The script to generate FPR plots of non-targeting sgRNA analysis using Sanson et al.'s data.
+draw-fig-S15.R | Yes         | The script to create Heatmaps and Venn diagrams to reveal discrepancy of sgRNA statistics between CB<sup>2</sup> and MAGeCK
 draw-fig3.R    | Yes         | The script to generate FPR plots of non-targeting sgRNA analysis using Parnas et al.'s data.
 draw-fig4.R    | Yes         | The script to create Heatmaps and Venn diagrams to reveal discrepancy of sgRNA statistics between CB<sup>2</sup> and MAGeCK.

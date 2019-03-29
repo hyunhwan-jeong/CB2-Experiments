@@ -1,7 +1,6 @@
 data_plot_name	library	length_gRNA	num_gRNAs	data_db_id	data_name	total
 YUSA_plasmid	yusa	19	87,437	ERR376998	plasmid	10,093,905
 Evers_RT112	nbt	20	961	SRR3341899	CRISPR_RT112	32,126,809
-Parnas_TNF_plasmid_LibAB	mgeckov2	20	130,209	TNF	plasmid_LibAB	5,659,085
 Golden_ANKRD52_KO_LibA1	hgeckov2_a	20	65,383	SRR5027845	ANKRD52_KO_LibA_1	25,927,307
 Golden_ANKRD52_KO_LibB1	hgeckov2_b	20	58,028	SRR5027846	ANKRD52_KO_LibB_1	17,471,047
 Golden_ANKRD52_KO_LibA2	hgeckov2_a	20	65,383	SRR5027849	ANKRD52_KO_LibA_2	26,009,567

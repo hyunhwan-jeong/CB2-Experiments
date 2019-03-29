@@ -15,7 +15,7 @@ mk_df <- function(f) {
     mutate(essential = gene %in% e)
 }
 
-all_df <- lapply(files, mk_df) %>% bind_rows %>% filter(method != "CRISPhieRmix")
+all_df <- lapply(files, mk_df) %>% bind_rows 
 
 datasets <- c("CRISPRn-RT112", "CRISPRn-UMUC3", "CRISPRi-RT112")
 
